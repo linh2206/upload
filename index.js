@@ -1,5 +1,6 @@
 var express = require('express')
 var multer  = require('multer')
+var path = require('path');
 // var upload = multer({ dest: 'uploads/' })
 const port = 3000
 const storage = multer.diskStorage({
@@ -27,8 +28,12 @@ const upload = multer({
   },
   fileFilter: fileFilter
 });
+
 var app = express()
-app.post('/uploadfile', upload.single('myFile'), (req, res, next) => {
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname + '/views/index.html'));
+})
+app.post('/upload', upload.single('myFile'), (req, res, next) => {
     const file = req.file
     if (!file) {
       const error = new Error('Please upload a file')
@@ -39,7 +44,7 @@ app.post('/uploadfile', upload.single('myFile'), (req, res, next) => {
     
   })
   const fs = require('fs')
-  app.post('/uploadfile1', upload.array('myFile',2), (req, res, next) => {
+  app.post('/upload1', upload.array('myFile',2), (req, res, next) => {
     const file =String(req.files[0].path)
     console.log(file)
     fs.readFile(file,function (err, data) {
